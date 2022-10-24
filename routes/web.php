@@ -23,4 +23,4 @@ Route::get('/dashboard', function () {
 
 require __DIR__.'/auth.php';
 
-Route::get('/{any}', 'dashboard')->middleware(['auth'])->where('any', '.*');
+Route::view('/{any}', 'dashboard')->middleware(['auth'])->where('any', '.*');
