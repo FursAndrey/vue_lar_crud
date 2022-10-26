@@ -8,9 +8,14 @@ export default function usePosts() {
         let response = await axios.get('/api/posts');
         posts.value = response.data.data;
     }
+    
+    let destroyPosts = async (id) => {
+        await axios.delete('/api/posts/'+id);
+    }
 
     return {
         posts,
-        getPosts
+        getPosts,
+        destroyPosts
     }
 }

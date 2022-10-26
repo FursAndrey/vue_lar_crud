@@ -5,11 +5,15 @@
             <th>Author</th>
             <th>Title</th>
             <th>Body</th>
+            <th></th>
         </tr>
         <tr v-for="post in posts" :key="post.id">
             <td>{{ post.author }}</td>
             <td>{{ post.title }}</td>
             <td>{{ post.body }}</td>
+            <td>
+                <button @click="deletePost(post.id)">Delete</button>
+            </td>
         </tr>
     </table>
 </template>
@@ -32,12 +36,21 @@ import { onMounted } from 'vue';
 import usePosts from '../../composition/posts.js';
 export default {
     setup() {
-        const { posts, getPosts } = usePosts();
+        const { posts, getPosts, destroyPosts } = usePosts();
 
         onMounted(getPosts);
 
+        const deletePost = async (id) => {
+            if (!window.confirm('Are you sure?')) {
+                return false;
+            }
+            await destroyPosts(id);
+            await getPosts();
+        }
+
         return {
             posts,
+            deletePost
             // getPosts
         }
     }
