@@ -1,5 +1,8 @@
 <template>
     Hello World.
+    <p>
+        <router-link :to="{ name: 'post.create' }">Create post</router-link>
+    </p>
     <table cellspacing="0" cellpadding="0">
         <tr>
             <th>Author</th>
@@ -36,7 +39,7 @@ import { onMounted } from 'vue';
 import usePosts from '../../composition/posts.js';
 export default {
     setup() {
-        const { posts, getPosts, destroyPosts } = usePosts();
+        const { posts, getPosts, destroyPost } = usePosts();
 
         onMounted(getPosts);
 
@@ -44,14 +47,13 @@ export default {
             if (!window.confirm('Are you sure?')) {
                 return false;
             }
-            await destroyPosts(id);
+            await destroyPost(id);
             await getPosts();
         }
 
         return {
             posts,
             deletePost
-            // getPosts
         }
     }
 }
