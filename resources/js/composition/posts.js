@@ -1,44 +1,62 @@
-import axios from "axios";
 import { ref } from "vue";
+import axios from "axios";
 import { useRouter } from "vue-router";
 
 export default function usePosts() {
-    let posts = ref([]);
-    let router = useRouter();
-    let errors = ref('');
+    const posts = ref([]);
+    const post = ref([]);
+    const router = useRouter();
+    const errors = ref('');
 
-    let getPosts = async () => {
+    const getPosts = async () => {
         let response = await axios.get('/api/posts');
         posts.value = response.data.data;
     }
+    
+    const getPost = async (id) => {
+        let response = await axios.get('/api/posts/' + id);
+        post.value = response.data.data;
+    }
 
-    let storePost = async (data) => {
+    const storePost = async (data) => {
         errors.value = '';
         try {
-            await axios.post('/api/posts', {'title': data.title, 'author': data.author, 'body': data.body});
+            await axios.post('/api/posts', data);
             await router.push({ name: 'post.index' });
         } catch(e) {
-            //построчный вывод ошибок (доделаю позже)
-            // if (e.response.status === 422) {
-            //     errors.value = e.response.data.errors
-            // }
-            if (e.response.status === '422') {
-                for (const key in e.response.data.errors) {
-                    errors.value += e.response.data.errors[key][0] + ' ';
-                }
+            //построчный вывод ошибок
+            if (e.response.status === 422) {
+                errors.value = e.response.data.errors
+            }
+        }
+    }
+
+    const updatePost = async (id) => {
+        errors.value = '';
+        
+        try {
+            await axios.put('/api/posts/' + id, post.value);
+            await router.push({ name: 'post.index' });
+        } catch(e) {
+            //построчный вывод ошибок
+            if (e.response.status === 422) {
+                errors.value = e.response.data.errors
             }
         }
     }
     
-    let destroyPost = async (id) => {
+    const destroyPost = async (id) => {
         await axios.delete('/api/posts/'+id);
     }
 
     return {
         posts,
+        post,
         errors,
         getPosts,
+        getPost,
         storePost,
+        updatePost,
         destroyPost
     }
 }

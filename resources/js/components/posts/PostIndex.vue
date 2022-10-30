@@ -1,5 +1,4 @@
 <template>
-    Hello World.
     <p>
         <router-link :to="{ name: 'post.create' }">Create post</router-link>
     </p>
@@ -15,6 +14,9 @@
             <td>{{ post.title }}</td>
             <td>{{ post.body }}</td>
             <td>
+                <router-link :to="{ name: 'post.edit', params:{ id: post.id } }">
+                    Редактировать
+                </router-link>
                 <button @click="deletePost(post.id)">Delete</button>
             </td>
         </tr>

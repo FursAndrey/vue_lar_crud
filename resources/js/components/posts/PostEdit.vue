@@ -1,13 +1,13 @@
 <template>
-    <div v-if="errors !== ''">
+    <!-- <div v-if="errors !== ''">
         <p v-for="(er, field) in errors" :key="field">
             <span v-for="error in er" :key="error" class="text-sm">
                 {{ error }}
             </span>
         </p>
-    </div>
-    <form @submit.prevent>
-        <h4>Создание поста</h4>
+    </div> -->
+    <form @submit.prevent="savePost">
+        <h4>Редактирование поста</h4>
         <p>
             <input
                 v-model="post.title"
@@ -26,7 +26,7 @@
             />
         </p>
         <p>
-            <button style="margin-top: 15px" @click="createPost">
+            <button style="margin-top: 15px">
                 Сохранить
             </button>
             <router-link :to="{ name: 'post.index' }">
@@ -37,26 +37,34 @@
 </template>
 
 <script>
-import { reactive } from '@vue/runtime-core'
+import { onMounted } from 'vue';
 import usePosts from '../../composition/posts';
 export default {
-    setup() {
-        let post = reactive({
-            'title': '',
-            'author': '',
-            'body': '',
-        });
+    props: {
+        id: {
+            required: true,
+            type: String
+        }
+    },
 
-        const { errors, storePost } = usePosts();
+    setup(props) {
+        const { post, getPost, updatePost } = usePosts();
 
-        const createPost = async () => {
-            await storePost({...post});
+        // должно быть так, но не работает из-за наличия "(props.id)"
+        // onMounted(getPost(props.id))
+        const getCurrentPost = () => {
+            getPost(props.id);
         }
 
+        const savePost = async () => {
+            await updatePost(props.id);
+        }
+
+        onMounted(getCurrentPost);
+        
         return {
-            errors,
             post,
-            createPost
+            savePost
         }
     }
 }
