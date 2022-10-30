@@ -1,11 +1,11 @@
 <template>
-    <!-- <div v-if="errors !== ''">
+    <div v-if="errors !== ''">
         <p v-for="(er, field) in errors" :key="field">
             <span v-for="error in er" :key="error" class="text-sm">
                 {{ error }}
             </span>
         </p>
-    </div> -->
+    </div>
     <form @submit.prevent="savePost">
         <h4>Редактирование поста</h4>
         <p>
@@ -48,7 +48,7 @@ export default {
     },
 
     setup(props) {
-        const { post, getPost, updatePost } = usePosts();
+        const { errors, post, getPost, updatePost } = usePosts();
 
         // должно быть так, но не работает из-за наличия "(props.id)"
         // onMounted(getPost(props.id))
@@ -63,6 +63,7 @@ export default {
         onMounted(getCurrentPost);
         
         return {
+            errors,
             post,
             savePost
         }
